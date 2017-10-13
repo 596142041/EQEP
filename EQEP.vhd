@@ -23,7 +23,7 @@ begin
 	clk_1us <= '0';
 	elsif(clk'event and clk = '1') then
 		if(counter = 12) then
-			counter :=0;
+			counter :=1;
 			clk_1us <= not clk_1us;
 		else
 			counter :=counter+1;
@@ -40,6 +40,7 @@ begin
 		EQEPA_temp <= '0';
 		EQEPB_temp <= '0';
 		EQEPI_temp <= '0';
+		puse_cnt   := 0;
 	elsif(clk_1us'event and clk_1us = '1') then
 		--EQEPA <= not PWMa_temp;
 		if(counter = 50) then
@@ -51,12 +52,16 @@ begin
 		elsif(counter = 100) then
 			EQEPB_temp <= not EQEPB_temp;
 			counter :=1;
-			puse_cnt:=puse_cnt+1;
-			if(puse_cnt = 20) then
-				if(EQEPI_temp = '0') then
-					EQEPI_temp <= '1';
+			-------------------------------------------------------
+			--
+			if(EQEPB_temp = '0') then
+				puse_cnt:=puse_cnt+1;
+				if(puse_cnt = 1000) then
+					if(EQEPI_temp = '0') then
+						EQEPI_temp <= '1';
+					end if;
+					puse_cnt :=0;
 				end if;
-				puse_cnt :=1;
 			end if;
 			
 		else
